@@ -1,6 +1,7 @@
 package com.tf.service;
 
-import java.util.Calendar;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.stereotype.Service;
@@ -12,17 +13,30 @@ public class BillingServiceImpl implements BillingService {
 	
 	@Override
 	public Boolean doBilling(Billing billing) {
-		Calendar calendar = Calendar.getInstance();
-		Integer date = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-		calendar.set(billing.getYear(), billing.getMonth(), date);
-		System.out.println("Time in millis "+calendar.getTimeInMillis()); //
-		Date currentDate = new Date();
-		if("capgemini".equalsIgnoreCase(billing.getUserName())
-			&& "0123456789012345".equalsIgnoreCase(billing.getCardNo())
-			&& billing.getCvv() == 123
-			&& currentDate.getTime() <= 1677846062830L
-				) {
-			return Boolean.TRUE;
+		
+		
+		
+		String actExpiryDate = "2023-1-31";
+		String userExpiryDate = billing.getYear()+"-"+billing.getMonth()+"-31";
+		
+		
+		SimpleDateFormat  dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			Date actExpiryDate1 = dateFormat.parse(actExpiryDate);
+			Date userExpiryDate1 = dateFormat.parse(userExpiryDate);
+			
+			if("cgdemo".equalsIgnoreCase(billing.getUserName())
+					&& "0123456789012345".equalsIgnoreCase(billing.getCardNo())
+					&& billing.getCvv() == 123
+					&& actExpiryDate1.getTime() == userExpiryDate1.getTime()
+						) {
+					return Boolean.TRUE;
+				}
+				return Boolean.FALSE;
+			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return Boolean.FALSE;
 	}
